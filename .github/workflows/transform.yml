@@ -1,0 +1,58 @@
+name: transform
+
+# Ran daily at 08:13 IST in the private data repo. No schedule and no runs here.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-writer
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'Yadu9238/blore-trf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # PySpark 3.5 is not supported on Python 3.12.
+          python-version: '3.11'
+          cache: pip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.ivy2
+          key: ivy-${{ hashFiles('requirements-transform.txt') }}
+
+      - run: pip install -r requirements.txt -r requirements-transform.txt
+
+      - name: Seal completed days into bronze
+        run: python -m src.compact
+
+      - name: Silver, gold, baselines, export, quality, maintenance
+        run: python -m src.transform.run
+
+      - name: Commit data
+        if: always()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "data: transform $(date -u +%Y-%m-%d) [skip ci]"
+          git pull --rebase --autostash
+          git push

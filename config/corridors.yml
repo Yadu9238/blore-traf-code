@@ -1,0 +1,89 @@
+# Bangalore tech corridors under observation.
+# Coordinates are approximate junction/landmark points - VERIFY each on a map
+# before the first production run. A point on the wrong side of a flyover
+# changes the routed path and silently corrupts the baseline.
+
+city_centre:
+  lat: 12.9716
+  lon: 77.5946
+
+corridors:
+  - id: silkboard_ecity
+    name: Silk Board to Electronic City
+    origin: { lat: 12.9166, lon: 77.6229 }
+    destination: { lat: 12.8452, lon: 77.6602 }
+
+  - id: ecity_silkboard
+    name: Electronic City to Silk Board
+    origin: { lat: 12.8452, lon: 77.6602 }
+    destination: { lat: 12.9166, lon: 77.6229 }
+
+  - id: marathahalli_whitefield
+    name: Marathahalli to Whitefield ITPL
+    origin: { lat: 12.9591, lon: 77.6974 }
+    destination: { lat: 12.9856, lon: 77.7367 }
+
+  - id: whitefield_marathahalli
+    name: Whitefield ITPL to Marathahalli
+    origin: { lat: 12.9856, lon: 77.7367 }
+    destination: { lat: 12.9591, lon: 77.6974 }
+
+  - id: krpuram_marathahalli
+    name: KR Puram to Marathahalli (ORR East)
+    origin: { lat: 12.9990, lon: 77.6784 }
+    destination: { lat: 12.9591, lon: 77.6974 }
+
+  - id: marathahalli_silkboard
+    name: Marathahalli to Silk Board (ORR South East)
+    origin: { lat: 12.9591, lon: 77.6974 }
+    destination: { lat: 12.9166, lon: 77.6229 }
+
+  - id: silkboard_marathahalli
+    name: Silk Board to Marathahalli (ORR South East)
+    origin: { lat: 12.9166, lon: 77.6229 }
+    destination: { lat: 12.9591, lon: 77.6974 }
+
+  - id: hebbal_krpuram
+    name: Hebbal to KR Puram (ORR North East)
+    origin: { lat: 13.0358, lon: 77.5970 }
+    destination: { lat: 12.9990, lon: 77.6784 }
+
+  - id: hebbal_manyata
+    name: Hebbal to Manyata Tech Park
+    origin: { lat: 13.0358, lon: 77.5970 }
+    destination: { lat: 13.0450, lon: 77.6200 }
+
+  - id: koramangala_bellandur
+    name: Koramangala to Bellandur
+    origin: { lat: 12.9352, lon: 77.6245 }
+    destination: { lat: 12.9260, lon: 77.6762 }
+
+  - id: bellandur_sarjapur
+    name: Bellandur to Sarjapur Road tech parks
+    origin: { lat: 12.9260, lon: 77.6762 }
+    destination: { lat: 12.9010, lon: 77.6870 }
+
+  - id: domlur_marathahalli
+    name: Domlur to Marathahalli (Old Airport Road)
+    origin: { lat: 12.9610, lon: 77.6387 }
+    destination: { lat: 12.9591, lon: 77.6974 }
+
+  - id: indiranagar_manyata
+    name: Indiranagar to Manyata Tech Park
+    origin: { lat: 12.9784, lon: 77.6408 }
+    destination: { lat: 13.0450, lon: 77.6200 }
+
+  - id: cvraman_marathahalli
+    name: Bagmane CV Raman Nagar to Marathahalli
+    origin: { lat: 12.9860, lon: 77.6650 }
+    destination: { lat: 12.9591, lon: 77.6974 }
+
+  - id: hebbal_airport
+    name: Hebbal to Kempegowda International Airport
+    origin: { lat: 13.0358, lon: 77.5970 }
+    destination: { lat: 13.1986, lon: 77.7066 }
+
+  - id: yeshwanthpur_manyata
+    name: Yeshwanthpur to Manyata Tech Park
+    origin: { lat: 13.0280, lon: 77.5540 }
+    destination: { lat: 13.0450, lon: 77.6200 }

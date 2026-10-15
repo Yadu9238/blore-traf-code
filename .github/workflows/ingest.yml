@@ -1,0 +1,68 @@
+name: ingest
+
+# Collection ran hourly in the private data repo. This public copy has no schedule and
+# never runs here: collected data is not published (see README, Data and licensing).
+on:
+  workflow_dispatch:
+    inputs:
+      samples:
+        description: Samples to take in this run
+        default: '3'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-writer
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    if: github.repository == 'Yadu9238/blore-trf'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Choose sampling density
+        id: density
+        run: |
+          H=$(date -u +%-H)
+          # IST peaks 07:00-11:00 and 16:00-21:00 map to these UTC hours.
+          if { [ "$H" -ge 1 ] && [ "$H" -le 5 ]; } || { [ "$H" -ge 10 ] && [ "$H" -le 15 ]; }; then
+            echo "samples=10" >> $GITHUB_OUTPUT
+            echo "interval=300" >> $GITHUB_OUTPUT
+          else
+            echo "samples=3" >> $GITHUB_OUTPUT
+            echo "interval=900" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Poll corridors
+        env:
+          MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+          SAMPLES: ${{ github.event.inputs.samples || steps.density.outputs.samples }}
+          SAMPLE_INTERVAL_S: ${{ steps.density.outputs.interval }}
+        run: python -m src.ingest
+
+      - name: Compact to bronze and enforce retention
+        run: python -m src.compact
+
+      - name: Commit data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "data: ingest $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
+          git pull --rebase --autostash
+          git push
